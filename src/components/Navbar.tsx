@@ -28,10 +28,22 @@ export const Navbar = () => {
   const isHome = location.pathname === "/";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      const top =
+        window.scrollY ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop ||
+        0;
+      setScrolled(top > 20);
+    };
+
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    document.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -40,9 +52,6 @@ export const Navbar = () => {
       document.body.style.overflow = "";
     };
   }, [open]);
-
-  // On non-home pages or when menu is open the header needs a solid background
-  const solid = scrolled || !isHome || open;
 
   const goReserve = () => {
     setOpen(false);
@@ -59,9 +68,12 @@ export const Navbar = () => {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-        solid
-          ? "bg-espresso/98 sm:bg-espresso/95 sm:backdrop-blur-sm shadow-[0_1px_0_rgba(217,154,69,0.15)]"
-          : "bg-transparent",
+        // Mobile: ALWAYS solid espresso with clean shadow so it is 100% visible at all times and never vanishes on scroll
+        // Desktop (lg:): Transparent at very top of home, and solid espresso when scrolled
+        "bg-espresso shadow-md lg:shadow-none",
+        isHome && !scrolled && !open
+          ? "lg:bg-transparent"
+          : "lg:bg-espresso/95 lg:backdrop-blur-sm lg:shadow-[0_1px_0_rgba(217,154,69,0.15)]",
       )}
     >
       <nav className="container-px mx-auto flex h-16 items-center justify-between lg:h-20">

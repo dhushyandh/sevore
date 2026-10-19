@@ -1,58 +1,36 @@
 import { useEffect, useState, useRef } from "react";
-import { useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { heroSlides } from "../data/content";
 import { cn } from "../lib/utils";
 
-const Hero3D = ({ reduced }: { reduced: boolean }) => {
-  const [Comp, setComp] = useState<React.ComponentType<{ reduced: boolean }> | null>(null);
-  useEffect(() => {
-    let active = true;
-    import("../components/Hero3D").then((m) => {
-      if (active) setComp(() => m.Hero3D);
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
-  if (!Comp) return null;
-  return <Comp reduced={reduced} />;
-};
-
-const AUTO_MS = 6000; // Unhurried 6s smooth transition
+const AUTO_MS = 6000; // Unhurried 6s smooth background crossfade
 
 export const Hero = () => {
-  const reduce = useReducedMotion();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const timerRef = useRef<number | null>(null);
 
-  // Auto-play interval with pause on hover or when modals/drawers are open
+  // Background image auto-crossfade (pauses when hover or when modal is open)
   useEffect(() => {
-    if (paused || reduce) return;
+    if (paused) return;
     timerRef.current = window.setInterval(() => {
-      // Never transition in background when a modal or menu has locked scroll
       if (document.body.style.overflow === "hidden" || document.hidden) return;
       setIndex((i) => (i + 1) % heroSlides.length);
     }, AUTO_MS);
     return () => {
       if (timerRef.current) window.clearInterval(timerRef.current);
     };
-  }, [paused, reduce]);
+  }, [paused]);
 
   const go = (n: number) => {
     setIndex((n + heroSlides.length) % heroSlides.length);
   };
 
   const scrollToMenu = () =>
-    document
-      .querySelector("#menu")
-      ?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+    document.querySelector("#menu")?.scrollIntoView({ behavior: "smooth" });
 
   const scrollToReserve = () =>
-    document
-      .querySelector("#reserve")
-      ?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+    document.querySelector("#reserve")?.scrollIntoView({ behavior: "smooth" });
 
   return (
     <section
@@ -62,9 +40,9 @@ export const Hero = () => {
       onMouseLeave={() => setPaused(false)}
     >
       {/* 
-        Smooth GPU-composited Background Carousel
+        GPU-composited Background Image Carousel
         All slides exist in the DOM with hardware-accelerated opacity crossfades.
-        Eliminates layout thrashing, DOM unmounting, and image decode jank.
+        Zero layout shifts, zero DOM unmounting, 100% fluid.
       */}
       <div className="absolute inset-0 pointer-events-none">
         {heroSlides.map((s, i) => {
@@ -81,10 +59,7 @@ export const Hero = () => {
               <img
                 src={s.image}
                 alt={s.alt}
-                className={cn(
-                  "h-full w-full object-cover transform-gpu md:transition-transform md:duration-[8000ms] md:ease-out",
-                  isActive && !reduce ? "md:scale-105 scale-100" : "scale-100"
-                )}
+                className="h-full w-full object-cover transform-gpu"
                 loading={i === 0 ? "eager" : "lazy"}
                 fetchPriority={i === 0 ? "high" : "low"}
               />
@@ -96,41 +71,28 @@ export const Hero = () => {
       {/* Atmospheric Gradients */}
       <div className="absolute inset-0 z-[2] bg-gradient-to-b from-espresso/85 via-espresso/50 to-espresso/90 pointer-events-none" />
       <div className="absolute inset-0 z-[2] bg-gradient-to-r from-espresso/70 via-espresso/30 to-transparent pointer-events-none" />
+      <div
+        className="absolute top-1/4 left-1/4 h-80 w-80 rounded-full bg-amber/10 blur-[100px] pointer-events-none z-[2]"
+        aria-hidden
+      />
 
-      {/* 3D particle accent overlay - desktop only to avoid mobile GPU contention */}
-      <div className="hidden md:block absolute inset-0 z-[3] opacity-75 pointer-events-none">
-        <Hero3D reduced={!!reduce} />
-      </div>
-
-      {/* Content Container with fixed/stable height to prevent navbar & hamburger shaking */}
+      {/* 
+        Solid, Stable Hero Content
+        No repeated text re-layouts or text-balance recalculations.
+        Completely rock-solid and butter smooth on all devices.
+      */}
       <div className="relative z-10 mx-auto flex min-h-screen min-h-[100dvh] max-w-content flex-col justify-center container-px pt-24 pb-28">
-        {/* Layered Text Content: Active slide is relative, others absolute so container never collapses */}
-        <div className="relative min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]">
-          {heroSlides.map((s, i) => {
-            const isActive = i === index;
-            return (
-              <div
-                key={s.image}
-                aria-hidden={!isActive}
-                className={cn(
-                  "transition-all duration-700 ease-out transform-gpu will-change-[opacity,transform]",
-                  isActive
-                    ? "opacity-100 translate-y-0 relative z-10"
-                    : "opacity-0 translate-y-3 absolute inset-0 pointer-events-none"
-                )}
-              >
-                <span className="block text-[11px] uppercase tracking-eyebrow font-medium text-amber-soft">
-                  {s.eyebrow}
-                </span>
-                <h1 className="mt-5 max-w-3xl font-serif text-[2.5rem] leading-[1.08] text-cream sm:text-6xl lg:text-[4.25rem] text-balance">
-                  {s.title}
-                </h1>
-                <p className="mt-6 max-w-xl text-base sm:text-lg leading-relaxed text-cream/80">
-                  {s.description}
-                </p>
-              </div>
-            );
-          })}
+        <div>
+          <span className="block text-[11px] uppercase tracking-eyebrow font-medium text-amber-soft">
+            Good Food. Great Company.
+          </span>
+          <h1 className="mt-5 max-w-3xl font-serif text-[2.5rem] leading-[1.08] text-cream sm:text-6xl lg:text-[4.25rem]">
+            Flavors That Bring People Together
+          </h1>
+          <p className="mt-6 max-w-xl text-base sm:text-lg leading-relaxed text-cream/80">
+            Handcrafted plates, warm hospitality, and a room made for long evenings.
+            Savoré is a contemporary dining room where every dish is made to order and every guest is looked after.
+          </p>
         </div>
 
         {/* Action Buttons */}

@@ -9,7 +9,7 @@
   }
 
   body {
-    @apply bg-cream text-espresso font-sans antialiased overflow-x-hidden;
+    @apply bg-cream text-espresso font-sans antialiased;
     font-feature-settings: "ss01", "cv01";
   }
 
