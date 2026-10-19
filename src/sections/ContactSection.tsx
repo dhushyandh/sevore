@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { MapPin, Clock, Phone, Mail, MessageCircle } from "lucide-react";
 import { SectionHeading } from "../components/SectionHeading";
 import { restaurantConfig } from "../config/restaurant";
+import { InteractiveMap } from "../components/InteractiveMap";
 
 const buildWhatsappGeneral = () => {
   const text = encodeURIComponent(
@@ -42,34 +43,35 @@ export const ContactSection = () => {
           />
         </div>
 
+        {/* Embedded Map */}
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mt-6 flex flex-col gap-4 rounded-2xl border border-dashed border-espresso/20 bg-white/60 p-6 sm:flex-row sm:items-center sm:justify-between"
+          className="mt-8 space-y-4"
         >
-          <div className="flex items-start gap-3">
-            <MapPin className="mt-0.5 shrink-0 text-amber-dark" size={20} />
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <p className="text-sm font-medium text-espresso">
-                Map preview not embedded
-              </p>
-              <p className="text-xs text-muted-dark mt-1 max-w-md">
-                A live map would appear here once a real address is configured.
-                Showing a labelled demo location block instead to avoid
-                misrepresenting a real business.
+              <h3 className="font-serif text-xl text-espresso flex items-center gap-2">
+                <MapPin className="text-amber-dark" size={20} />
+                <span>Our Location</span>
+              </h3>
+              <p className="text-xs text-muted-dark mt-0.5">
+                {restaurantConfig.address.line1}, {restaurantConfig.address.line2}
               </p>
             </div>
+            <a
+              href={buildWhatsappGeneral()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-xs font-semibold text-white hover:bg-[#1FB855] transition-colors shadow-sm"
+            >
+              <MessageCircle size={16} /> WhatsApp Concierge
+            </a>
           </div>
-          <a
-            href={buildWhatsappGeneral()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white hover:bg-[#1FB855] transition-colors"
-          >
-            <MessageCircle size={18} /> WhatsApp us
-          </a>
+
+          <InteractiveMap />
         </motion.div>
 
         <div className="mt-6 flex items-center justify-center gap-2 text-xs text-muted-dark">

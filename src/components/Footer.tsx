@@ -15,9 +15,21 @@ export const Footer = () => (
     <div className="mx-auto max-w-content container-px">
       <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         <div className="sm:col-span-2 lg:col-span-1">
-          <p className="font-serif text-2xl text-cream">
-            {restaurantConfig.name}
-          </p>
+          <Link to="/" className="inline-flex items-center gap-3 group">
+            <img
+              src="/logo-emblem.png"
+              alt=""
+              className="h-10 w-10 object-contain drop-shadow transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="flex flex-col">
+              <span className="font-serif text-2xl text-cream leading-none group-hover:text-amber-soft transition-colors">
+                {restaurantConfig.name}
+              </span>
+              <span className="text-[9px] uppercase tracking-[0.24em] text-amber-soft/80 font-sans mt-0.5">
+                Restaurant & Café
+              </span>
+            </div>
+          </Link>
           <p className="mt-3 text-sm text-cream/60 leading-relaxed max-w-xs">
             Contemporary dining and a warm room. Handcrafted plates made to
             order, for long, easy evenings.

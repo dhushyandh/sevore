@@ -67,10 +67,22 @@ export const Navbar = () => {
       <nav className="container-px mx-auto flex h-16 items-center justify-between lg:h-20">
         <Link
           to="/"
-          className="font-serif text-2xl text-cream tracking-wide hover:text-amber-soft transition-colors"
+          className="flex items-center gap-2.5 group"
           aria-label={`${restaurantConfig.name} — home`}
         >
-          {restaurantConfig.name}
+          <img
+            src="/logo-emblem.png"
+            alt=""
+            className="h-8 w-8 sm:h-9 sm:w-9 object-contain drop-shadow transition-transform duration-300 group-hover:scale-105"
+          />
+          <div className="flex flex-col">
+            <span className="font-serif text-xl sm:text-2xl text-cream tracking-wide leading-none group-hover:text-amber-soft transition-colors">
+              {restaurantConfig.name}
+            </span>
+            <span className="text-[8px] sm:text-[9px] uppercase tracking-[0.24em] text-amber-soft/80 font-sans mt-0.5">
+              Restaurant & Café
+            </span>
+          </div>
         </Link>
 
         <ul className="hidden lg:flex items-center gap-8">

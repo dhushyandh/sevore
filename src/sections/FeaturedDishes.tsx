@@ -25,6 +25,7 @@ export const FeaturedDishes = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5, delay: i * 0.08 }}
+              className="h-full flex flex-col"
             >
               <MenuCard item={item} onView={setSelected} />
             </motion.div>

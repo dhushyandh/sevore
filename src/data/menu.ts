@@ -166,23 +166,9 @@ export const menuItems: MenuItem[] = [
     vegetarian: true,
   },
   {
-    id: "bev-2",
-    name: "Espresso Martini",
-    description: "Vanilla vodka, fresh espresso, bean.",
-    longDescription:
-      "Vanilla vodka shaken with a fresh espresso shot and coffee liqueur, finished with crema and a coffee bean.",
-    price: 380,
-    category: "Beverages",
-    image:
-      "https://images.pexels.com/photos/15750737/pexels-photo-15750737.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
-    alt: "Bartender preparing an espresso martini",
-    vegetarian: true,
-    signature: true,
-  },
-  {
     id: "dessert-1",
     name: "Dark Chocolate Fondant",
-    description: "Molten centre, cherry, cocoa nib.",
+    description: "Molten centre, cherry compote, cocoa nib.",
     longDescription:
       "Warm dark chocolate fondant with a molten centre, tart cherry compote, and crisp cocoa nib.",
     price: 360,

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F2D194" />
+      <stop offset="45%" stop-color="#D99A45" />
+      <stop offset="100%" stop-color="#B37829" />
+    </linearGradient>
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4E7A5D" />
+      <stop offset="100%" stop-color="#284638" />
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Espresso Squircle Background -->
+  <rect width="100" height="100" rx="22" fill="#211710" />
+
+  <!-- Outer Golden Crescent Ring -->
+  <path
+    d="M 46 19 C 27 21 16 38 18 57 C 20 74 37 86 54 83 C 44 80 32 72 28 60 C 23 46 31 31 46 25 C 47 23 46.5 20.5 46 19 Z"
+    fill="url(#goldGrad)"
+  />
+
+  <!-- Fork Silhouette in Warm Amber -->
+  <g fill="url(#goldGrad)">
+    <!-- Prongs -->
+    <path d="M 33 28 L 33 37 C 33 39 34.5 41 37.5 41 C 40.5 41 42 39 42 37 L 42 28 C 42 27.5 41.5 27 41 27 C 40.5 27 40 27.5 40 28 L 40 36 C 40 37 39.5 37.5 39 37.5 C 38.5 37.5 38 37 38 36 L 38 28 C 38 27.5 37.5 27 37 27 C 36.5 27 36 27.5 36 28 L 36 36 C 36 37 35.5 37.5 35 37.5 C 34.5 37.5 34 37 34 36 L 34 28 C 34 27.5 33.5 27 33 27 C 32.5 27 32 27.5 32 28 Z" />
+    <!-- Fork Neck & Handle -->
+    <path d="M 36.5 41 L 38.5 41 C 38.5 44 38.8 49 39.2 55 C 39.7 62 40 70 39.5 73 C 39.2 74 38 74.5 37.5 74.5 C 37 74.5 35.8 74 35.5 73 C 35 70 35.3 62 35.8 55 C 36.2 49 36.5 44 36.5 41 Z" />
+  </g>
+
+  <!-- Rising Elegant Aroma / Steam Swirls -->
+  <path
+    d="M 52 75 C 50 63 56 55 58 45 C 60 36 57 26 53 17 C 55 18 58 24 57 32 C 56 39 52 46 51 56 C 50 64 54 70 54 72 Z"
+    fill="url(#goldGrad)"
+  />
+  <path
+    d="M 64 68 C 66 58 72 50 71 39 C 70 29 65 22 62 13 C 65 17 69 25 70 34 C 71 43 66 52 64 60 C 63 64 64 67 64 68 Z"
+    fill="url(#goldGrad)"
+  />
+
+  <!-- Olive / Forest Botanical Leaf -->
+  <path
+    d="M 53 82 C 55 69 66 61 79 57 C 78 71 68 83 53 82 Z"
+    fill="url(#leafGrad)"
+  />
+  <!-- Leaf Central Vein -->
+  <path
+    d="M 54 81 C 61 74 69 68 76 60"
+    stroke="#D99A45"
+    stroke-width="1.2"
+    stroke-linecap="round"
+    fill="none"
+    opacity="0.8"
+  />
+</svg>

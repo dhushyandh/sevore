@@ -7,6 +7,7 @@ interface SectionHeadingProps {
   description?: string;
   align?: "left" | "center";
   className?: string;
+  theme?: "light" | "dark";
 }
 
 export const SectionHeading = ({
@@ -15,8 +16,11 @@ export const SectionHeading = ({
   description,
   align = "center",
   className,
+  theme = "light",
 }: SectionHeadingProps) => {
   const reduce = useReducedMotion();
+  const isDark = theme === "dark";
+
   return (
     <div
       className={cn(
@@ -30,7 +34,7 @@ export const SectionHeading = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.5 }}
-        className="eyebrow"
+        className={cn("eyebrow", isDark && "text-amber-soft")}
       >
         {eyebrow}
       </motion.span>
@@ -39,7 +43,10 @@ export const SectionHeading = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.6, delay: 0.05 }}
-        className="text-3xl sm:text-4xl lg:text-[2.75rem] leading-[1.15] text-espresso text-balance max-w-2xl"
+        className={cn(
+          "text-3xl sm:text-4xl lg:text-[2.75rem] leading-[1.15] text-balance max-w-2xl font-serif",
+          isDark ? "text-cream" : "text-espresso"
+        )}
       >
         {title}
       </motion.h2>
@@ -50,7 +57,8 @@ export const SectionHeading = ({
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, delay: 0.1 }}
           className={cn(
-            "text-muted-dark text-base leading-relaxed max-w-xl",
+            "text-base leading-relaxed max-w-xl",
+            isDark ? "text-cream/70" : "text-muted-dark",
             align === "center" && "mx-auto",
           )}
         >

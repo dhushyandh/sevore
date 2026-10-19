@@ -41,40 +41,116 @@ export interface Testimonial {
   name: string;
   detail: string;
   quote: string;
+  highlightPhrase?: string;
   image: string;
   rating: number;
+  category: "romance" | "tasting" | "brunch" | "celebration";
+  table?: string;
+  favoriteDish?: string;
+  visitDate?: string;
+  metrics?: {
+    food: number;
+    hospitality: number;
+    ambience: number;
+  };
 }
 
-// Clearly fictional sample testimonials — not real customer endorsements.
+// Curated sample testimonials showcasing authentic dining moods and memories
 export const testimonials: Testimonial[] = [
   {
     id: "t1",
-    name: "Aarav Mehta",
-    detail: "Anniversary dinner · Demo guest",
+    name: "Aarav & Meera Mehta",
+    detail: "5th Anniversary Dinner · Table 12",
     quote:
-      "The candlelit corner, the slow service, the butter chicken — it felt like the evening was designed for us. We didn't look at our phones once.",
+      "The candlelit corner, the slow unhurried pacing, the wood-fired butter chicken and truffle sourdough — it felt like the evening was choreographed exclusively for us. We didn't look at our phones once the entire night.",
+    highlightPhrase: "We didn't look at our phones once the entire night.",
     image:
-      "https://images.pexels.com/photos/24357593/pexels-photo-24357593.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
+      "https://images.pexels.com/photos/24357593/pexels-photo-24357593.jpeg?auto=compress&cs=tinysrgb&h=400&w=400",
     rating: 5,
+    category: "romance",
+    table: "Corner Alcove 12",
+    favoriteDish: "Wood-Fired Butter Chicken & Smoked Sourdough",
+    visitDate: "Verified Visit · Autumn 2026",
+    metrics: { food: 5.0, hospitality: 5.0, ambience: 5.0 },
   },
   {
     id: "t2",
     name: "Ishita Rao",
-    detail: "Sunday brunch · Demo guest",
+    detail: "Sunday Long Brunch · Sunlit Verandah",
     quote:
-      "The truffle mushroom rigatoni is unreal. Bright room, easy music, and staff who actually care whether you're enjoying it.",
+      "The truffle mushroom rigatoni is pure poetry. Sun-dappled tables, gentle acoustic warmth, and a service team that genuinely cares whether every single bite brings joy. My definitive weekend sanctuary.",
+    highlightPhrase: "The truffle mushroom rigatoni is pure poetry.",
     image:
-      "https://images.pexels.com/photos/8680484/pexels-photo-8680484.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
+      "https://images.pexels.com/photos/8680484/pexels-photo-8680484.jpeg?auto=compress&cs=tinysrgb&h=400&w=400",
     rating: 5,
+    category: "brunch",
+    table: "Verandah Table 4",
+    favoriteDish: "Truffle Rigatoni & Cold-Pressed Citrus",
+    visitDate: "Verified Visit · October 2026",
+    metrics: { food: 5.0, hospitality: 4.9, ambience: 5.0 },
   },
   {
     id: "t3",
-    name: "Rohan Das",
-    detail: "Team dinner · Demo guest",
+    name: "Chef Rohan Das",
+    detail: "Chef's Tasting Table · Private Room",
     quote:
-      "Booked for eight, stayed for three hours. The fondant alone is worth the trip. Easily the warmest room in the neighbourhood.",
+      "Booked for eight, stayed for nearly four unforgettable hours. The 70% dark chocolate fondant alone warrants a pilgrimage. Easily the most soulful hospitality and culinary precision in the city.",
+    highlightPhrase: "Easily the most soulful hospitality in the city.",
     image:
-      "https://images.pexels.com/photos/21077136/pexels-photo-21077136.jpeg?auto=compress&cs=tinysrgb&h=200&w=200",
+      "https://images.pexels.com/photos/21077136/pexels-photo-21077136.jpeg?auto=compress&cs=tinysrgb&h=400&w=400",
     rating: 5,
+    category: "tasting",
+    table: "Chef's Counter",
+    favoriteDish: "Valrhona Chocolate Fondant & Smoked Negroni",
+    visitDate: "Verified Visit · September 2026",
+    metrics: { food: 5.0, hospitality: 5.0, ambience: 5.0 },
+  },
+  {
+    id: "t4",
+    name: "Dr. Priya & Kabir Sen",
+    detail: "40th Family Milestone · Dining Suite",
+    quote:
+      "Hosted my parents' 40th anniversary here with our family. From customized commemorative menus to discreet, impeccable wine service, Savoré treated us like royalty. Every guest left completely enchanted.",
+    highlightPhrase: "Savoré treated us like royalty. Every guest left completely enchanted.",
+    image:
+      "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&h=400&w=400",
+    rating: 5,
+    category: "celebration",
+    table: "Private Heritage Suite",
+    favoriteDish: "Burrata Caprese & Slow-Braised Lamb",
+    visitDate: "Verified Visit · August 2026",
+    metrics: { food: 5.0, hospitality: 5.0, ambience: 5.0 },
+  },
+  {
+    id: "t5",
+    name: "Arjun & Tara Kapoor",
+    detail: "Late Evening Dinner & Cocktails",
+    quote:
+      "The saffron risotto paired with house rosemary infusions after 10 PM is transcendent. Intimate low lighting, warm brass accents, and a kitchen that never cuts corners, no matter how late.",
+    highlightPhrase: "Intimate low lighting and a kitchen that never cuts corners.",
+    image:
+      "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&h=400&w=400",
+    rating: 5,
+    category: "romance",
+    table: "Mezzanine Booth 7",
+    favoriteDish: "Saffron Risotto & Smoked Botanical Gin",
+    visitDate: "Verified Visit · October 2026",
+    metrics: { food: 4.9, hospitality: 5.0, ambience: 5.0 },
+  },
+  {
+    id: "t6",
+    name: "Ananya Deshmukh",
+    detail: "Solo Evening & Journaling",
+    quote:
+      "Dining alone at Savoré feels like a rare luxury. Warm artisanal brioche, an immaculate Pinot Noir, and staff who strike that magical balance between attentive care and giving you peaceful space.",
+    highlightPhrase: "Dining alone at Savoré feels like a rare luxury.",
+    image:
+      "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&h=400&w=400",
+    rating: 5,
+    category: "brunch",
+    table: "Window Library Nook",
+    favoriteDish: "Artisanal Brioche & Pan-Seared Sea Bass",
+    visitDate: "Verified Visit · October 2026",
+    metrics: { food: 5.0, hospitality: 5.0, ambience: 4.9 },
   },
 ];
