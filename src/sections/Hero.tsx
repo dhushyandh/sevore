@@ -27,10 +27,12 @@ export const Hero = () => {
   const [paused, setPaused] = useState(false);
   const timerRef = useRef<number | null>(null);
 
-  // Auto-play interval with pause on hover
+  // Auto-play interval with pause on hover or when modals/drawers are open
   useEffect(() => {
     if (paused || reduce) return;
     timerRef.current = window.setInterval(() => {
+      // Never transition in background when a modal or menu has locked scroll
+      if (document.body.style.overflow === "hidden" || document.hidden) return;
       setIndex((i) => (i + 1) % heroSlides.length);
     }, AUTO_MS);
     return () => {
@@ -55,7 +57,7 @@ export const Hero = () => {
   return (
     <section
       id="home"
-      className="relative min-h-[100svh] w-full overflow-hidden bg-espresso select-none"
+      className="relative min-h-screen min-h-[100dvh] w-full overflow-hidden bg-espresso select-none"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -80,8 +82,8 @@ export const Hero = () => {
                 src={s.image}
                 alt={s.alt}
                 className={cn(
-                  "h-full w-full object-cover transform-gpu transition-transform duration-[8000ms] ease-out",
-                  isActive && !reduce ? "scale-105" : "scale-100"
+                  "h-full w-full object-cover transform-gpu md:transition-transform md:duration-[8000ms] md:ease-out",
+                  isActive && !reduce ? "md:scale-105 scale-100" : "scale-100"
                 )}
                 loading={i === 0 ? "eager" : "lazy"}
                 fetchPriority={i === 0 ? "high" : "low"}
@@ -95,13 +97,13 @@ export const Hero = () => {
       <div className="absolute inset-0 z-[2] bg-gradient-to-b from-espresso/85 via-espresso/50 to-espresso/90 pointer-events-none" />
       <div className="absolute inset-0 z-[2] bg-gradient-to-r from-espresso/70 via-espresso/30 to-transparent pointer-events-none" />
 
-      {/* 3D particle accent overlay */}
-      <div className="absolute inset-0 z-[3] opacity-75 pointer-events-none">
+      {/* 3D particle accent overlay - desktop only to avoid mobile GPU contention */}
+      <div className="hidden md:block absolute inset-0 z-[3] opacity-75 pointer-events-none">
         <Hero3D reduced={!!reduce} />
       </div>
 
       {/* Content Container with fixed/stable height to prevent navbar & hamburger shaking */}
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-content flex-col justify-center container-px pt-24 pb-28">
+      <div className="relative z-10 mx-auto flex min-h-screen min-h-[100dvh] max-w-content flex-col justify-center container-px pt-24 pb-28">
         {/* Layered Text Content: Active slide is relative, others absolute so container never collapses */}
         <div className="relative min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]">
           {heroSlides.map((s, i) => {

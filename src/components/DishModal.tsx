@@ -37,13 +37,13 @@ export const DishModal = ({ item, onClose }: DishModalProps) => {
           aria-modal="true"
           aria-label={`${item.name} details`}
         >
-          <div className="absolute inset-0 bg-espresso/70 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-espresso/85 sm:bg-espresso/70 sm:backdrop-blur-sm" />
 
           <motion.div
-            initial={{ opacity: 0, y: 25, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 15, scale: 0.98 }}
-            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] as const }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()}
             className="relative z-10 grid w-full max-w-3xl overflow-hidden rounded-2xl bg-cream shadow-2xl sm:grid-cols-2 max-h-[90vh] transform-gpu will-change-[transform,opacity]"
           >

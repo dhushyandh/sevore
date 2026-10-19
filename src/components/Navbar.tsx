@@ -41,8 +41,8 @@ export const Navbar = () => {
     };
   }, [open]);
 
-  // On non-home pages the header always needs a solid background
-  const solid = scrolled || !isHome;
+  // On non-home pages or when menu is open the header needs a solid background
+  const solid = scrolled || !isHome || open;
 
   const goReserve = () => {
     setOpen(false);
@@ -60,7 +60,7 @@ export const Navbar = () => {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
         solid
-          ? "bg-espresso/95 backdrop-blur-sm shadow-[0_1px_0_rgba(217,154,69,0.15)]"
+          ? "bg-espresso/98 sm:bg-espresso/95 sm:backdrop-blur-sm shadow-[0_1px_0_rgba(217,154,69,0.15)]"
           : "bg-transparent",
       )}
     >
@@ -120,11 +120,11 @@ export const Navbar = () => {
 
         <button
           onClick={() => setOpen((v) => !v)}
-          className="lg:hidden text-cream p-2 -mr-2"
+          className="lg:hidden text-cream h-10 w-10 flex items-center justify-center rounded-lg active:bg-white/10 transition-colors -mr-2"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
         >
-          {open ? <X size={22} /> : <Menu size={22} />}
+          {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </nav>
 
@@ -134,35 +134,29 @@ export const Navbar = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="lg:hidden fixed inset-0 top-16 bg-espresso"
+            transition={{ duration: 0.2 }}
+            className="lg:hidden fixed inset-x-0 top-16 bottom-0 bg-espresso overflow-y-auto transform-gpu will-change-[opacity]"
           >
-            <motion.ul
-              initial={reduce ? {} : { y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.05 }}
-              className="flex flex-col gap-2 px-6 pt-8 pb-12"
-            >
+            <div className="flex flex-col gap-2 px-6 pt-6 pb-12">
               {links.map((l) => (
-                <li key={l.to}>
-                  <Link
-                    to={l.to}
-                    onClick={() => setOpen(false)}
-                    className="block w-full text-left py-3 text-lg font-serif text-cream border-b border-cream/10 hover:text-amber-soft transition-colors"
-                  >
-                    {l.label}
-                  </Link>
-                </li>
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  onClick={() => setOpen(false)}
+                  className="block w-full text-left py-3 text-lg font-serif text-cream border-b border-cream/10 hover:text-amber-soft transition-colors"
+                >
+                  {l.label}
+                </Link>
               ))}
-              <li className="pt-4">
+              <div className="pt-4">
                 <button
                   onClick={goReserve}
-                  className="w-full rounded-full bg-amber py-3 text-sm font-medium text-espresso"
+                  className="w-full rounded-full bg-amber py-3.5 text-sm font-medium text-espresso hover:bg-amber-soft transition-colors"
                 >
                   Reserve a Table
                 </button>
-              </li>
-            </motion.ul>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
