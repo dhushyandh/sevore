@@ -5,7 +5,7 @@ import * as THREE from "three";
 /**
  * A lightweight, abstract 3D accent: floating amber particles drifting in a
  * slow group rotation. Rendered behind the hero text as a cinematic shimmer.
- * Designed to be cheap (points + simple material) and respects reduced motion.
+ * Optimized for 60fps performance and low GPU power consumption.
  */
 
 interface ParticleFieldProps {
@@ -28,10 +28,10 @@ const ParticleField = ({ count, color }: ParticleFieldProps) => {
 
   useFrame((state, delta) => {
     if (!ref.current) return;
-    ref.current.rotation.y += delta * 0.04;
-    ref.current.rotation.x += delta * 0.015;
+    ref.current.rotation.y += delta * 0.03;
+    ref.current.rotation.x += delta * 0.01;
     const t = state.clock.elapsedTime;
-    ref.current.position.y = Math.sin(t * 0.3) * 0.3;
+    ref.current.position.y = Math.sin(t * 0.25) * 0.2;
   });
 
   return (
@@ -45,10 +45,10 @@ const ParticleField = ({ count, color }: ParticleFieldProps) => {
       </bufferGeometry>
       <pointsMaterial
         color={color}
-        size={0.08}
+        size={0.07}
         sizeAttenuation
         transparent
-        opacity={0.9}
+        opacity={0.8}
         depthWrite={false}
         blending={THREE.AdditiveBlending}
       />
@@ -64,12 +64,17 @@ export const Hero3D = ({ reduced }: Hero3DProps) => {
   return (
     <Canvas
       camera={{ position: [0, 0, 6], fov: 60 }}
-      dpr={[1, 1.8]}
-      gl={{ alpha: true, antialias: true }}
+      dpr={1}
+      gl={{
+        alpha: true,
+        antialias: false,
+        powerPreference: "low-power",
+        depth: false,
+      }}
       style={{ pointerEvents: "none" }}
       frameloop={reduced ? "demand" : "always"}
     >
-      <ParticleField count={reduced ? 60 : 180} color="#D99A45" />
+      <ParticleField count={reduced ? 25 : 75} color="#D99A45" />
     </Canvas>
   );
 };

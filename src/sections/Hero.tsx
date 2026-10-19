@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
+import { useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { heroSlides } from "../data/content";
+import { cn } from "../lib/utils";
 
 const Hero3D = ({ reduced }: { reduced: boolean }) => {
   const [Comp, setComp] = useState<React.ComponentType<{ reduced: boolean }> | null>(null);
@@ -18,141 +19,136 @@ const Hero3D = ({ reduced }: { reduced: boolean }) => {
   return <Comp reduced={reduced} />;
 };
 
-
-const AUTO_MS = 2500;
+const AUTO_MS = 6000; // Unhurried 6s smooth transition
 
 export const Hero = () => {
   const reduce = useReducedMotion();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const timerRef = useRef<number | null>(null);
 
+  // Auto-play interval with pause on hover
   useEffect(() => {
-    if (paused) return;
-    const id = window.setInterval(
-      () => setIndex((i) => (i + 1) % heroSlides.length),
-      AUTO_MS,
-    );
-    return () => window.clearInterval(id);
-  }, [paused]);
+    if (paused || reduce) return;
+    timerRef.current = window.setInterval(() => {
+      setIndex((i) => (i + 1) % heroSlides.length);
+    }, AUTO_MS);
+    return () => {
+      if (timerRef.current) window.clearInterval(timerRef.current);
+    };
+  }, [paused, reduce]);
 
-  const slide = heroSlides[index];
-
-  const go = (n: number) =>
+  const go = (n: number) => {
     setIndex((n + heroSlides.length) % heroSlides.length);
+  };
 
   const scrollToMenu = () =>
     document
       .querySelector("#menu")
       ?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+
   const scrollToReserve = () =>
     document
       .querySelector("#reserve")
       ?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
 
-  const container = {
-    hidden: {},
-    show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
-  };
-  const item = {
-    hidden: { opacity: 0, y: 24 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const },
-    },
-  };
-
   return (
     <section
       id="home"
-      className="relative min-h-[100svh] w-full overflow-hidden"
+      className="relative min-h-[100svh] w-full overflow-hidden bg-espresso select-none"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* Background carousel */}
-      <AnimatePresence mode="popLayout">
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, scale: reduce ? 1 : 1.06 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{
-            duration: 0.8,
-            ease: "easeInOut",
-          }}
-          className="absolute inset-0"
-        >
-          <img
-            src={slide.image}
-            alt={slide.alt}
-            className="h-full w-full object-cover"
-            fetchPriority="high"
-          />
-        </motion.div>
-      </AnimatePresence>
+      {/* 
+        Smooth GPU-composited Background Carousel
+        All slides exist in the DOM with hardware-accelerated opacity crossfades.
+        Eliminates layout thrashing, DOM unmounting, and image decode jank.
+      */}
+      <div className="absolute inset-0 pointer-events-none">
+        {heroSlides.map((s, i) => {
+          const isActive = i === index;
+          return (
+            <div
+              key={s.image}
+              aria-hidden={!isActive}
+              className={cn(
+                "absolute inset-0 transition-opacity duration-1000 ease-in-out transform-gpu will-change-[opacity]",
+                isActive ? "opacity-100 z-[1]" : "opacity-0 z-0"
+              )}
+            >
+              <img
+                src={s.image}
+                alt={s.alt}
+                className={cn(
+                  "h-full w-full object-cover transform-gpu transition-transform duration-[8000ms] ease-out",
+                  isActive && !reduce ? "scale-105" : "scale-100"
+                )}
+                loading={i === 0 ? "eager" : "lazy"}
+                fetchPriority={i === 0 ? "high" : "low"}
+              />
+            </div>
+          );
+        })}
+      </div>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-espresso/80 via-espresso/55 to-espresso/90" />
-      <div className="absolute inset-0 bg-gradient-to-r from-espresso/70 to-transparent" />
+      {/* Atmospheric Gradients */}
+      <div className="absolute inset-0 z-[2] bg-gradient-to-b from-espresso/85 via-espresso/50 to-espresso/90 pointer-events-none" />
+      <div className="absolute inset-0 z-[2] bg-gradient-to-r from-espresso/70 via-espresso/30 to-transparent pointer-events-none" />
 
-      {/* 3D particle overlay */}
-      <div className="absolute inset-0 z-[1] opacity-80">
+      {/* 3D particle accent overlay */}
+      <div className="absolute inset-0 z-[3] opacity-75 pointer-events-none">
         <Hero3D reduced={!!reduce} />
       </div>
 
-      {/* Content */}
+      {/* Content Container with fixed/stable height to prevent navbar & hamburger shaking */}
       <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-content flex-col justify-center container-px pt-24 pb-28">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={index}
-            variants={container}
-            initial={reduce ? false : "hidden"}
-            animate="show"
-          >
-            <motion.span
-              variants={item}
-              className="block text-[11px] uppercase tracking-eyebrow font-medium text-amber-soft"
-            >
-              {slide.eyebrow}
-            </motion.span>
-            <motion.h1
-              variants={item}
-              className="mt-5 max-w-3xl font-serif text-[2.5rem] leading-[1.08] text-cream sm:text-6xl lg:text-[4.25rem] text-balance"
-            >
-              {slide.title}
-            </motion.h1>
-            <motion.p
-              variants={item}
-              className="mt-6 max-w-xl text-base sm:text-lg leading-relaxed text-cream/80"
-            >
-              {slide.description}
-            </motion.p>
-          </motion.div>
-        </AnimatePresence>
+        {/* Layered Text Content: Active slide is relative, others absolute so container never collapses */}
+        <div className="relative min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]">
+          {heroSlides.map((s, i) => {
+            const isActive = i === index;
+            return (
+              <div
+                key={s.image}
+                aria-hidden={!isActive}
+                className={cn(
+                  "transition-all duration-700 ease-out transform-gpu will-change-[opacity,transform]",
+                  isActive
+                    ? "opacity-100 translate-y-0 relative z-10"
+                    : "opacity-0 translate-y-3 absolute inset-0 pointer-events-none"
+                )}
+              >
+                <span className="block text-[11px] uppercase tracking-eyebrow font-medium text-amber-soft">
+                  {s.eyebrow}
+                </span>
+                <h1 className="mt-5 max-w-3xl font-serif text-[2.5rem] leading-[1.08] text-cream sm:text-6xl lg:text-[4.25rem] text-balance">
+                  {s.title}
+                </h1>
+                <p className="mt-6 max-w-xl text-base sm:text-lg leading-relaxed text-cream/80">
+                  {s.description}
+                </p>
+              </div>
+            );
+          })}
+        </div>
 
-        <motion.div
-          variants={container}
-          initial={reduce ? false : "hidden"}
-          animate="show"
-          className="mt-9 flex flex-col gap-3 sm:flex-row sm:gap-4"
-        >
-          <motion.button
-            variants={item}
+        {/* Action Buttons */}
+        <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:gap-4 z-10">
+          <button
             onClick={scrollToMenu}
-            className="rounded-full bg-amber px-7 py-3.5 text-sm font-medium text-espresso hover:bg-amber-soft transition-colors active:scale-[0.98]"
+            className="rounded-full bg-amber px-7 py-3.5 text-sm font-medium text-espresso hover:bg-amber-soft transition-colors active:scale-[0.98] shadow-lg shadow-amber/20"
           >
             Explore Menu
-          </motion.button>
-          <motion.button
-            variants={item}
+          </button>
+          <button
             onClick={scrollToReserve}
-            className="rounded-full border border-cream/40 px-7 py-3.5 text-sm font-medium text-cream hover:border-amber hover:text-amber-soft transition-colors active:scale-[0.98]"
+            className="rounded-full border border-cream/40 px-7 py-3.5 text-sm font-medium text-cream hover:border-amber hover:text-amber-soft transition-colors active:scale-[0.98] backdrop-blur-sm"
           >
             Reserve a Table
-          </motion.button>
-        </motion.div>
+          </button>
+        </div>
 
-        {/* Carousel controls */}
-        <div className="mt-12 flex items-center gap-3">
+        {/* Carousel controls with smooth progress pills */}
+        <div className="mt-12 flex items-center gap-3 z-10">
           {heroSlides.map((s, i) => (
             <button
               key={s.image}
@@ -161,7 +157,7 @@ export const Hero = () => {
               aria-current={i === index}
               className={`h-1.5 rounded-full transition-all duration-500 ${
                 i === index
-                  ? "w-8 bg-amber"
+                  ? "w-8 bg-amber shadow-[0_0_12px_rgba(217,154,69,0.5)]"
                   : "w-3 bg-cream/40 hover:bg-cream/70"
               }`}
             />
@@ -169,6 +165,7 @@ export const Hero = () => {
         </div>
       </div>
 
+      {/* Down Indicator */}
       <button
         onClick={scrollToMenu}
         className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-cream/70 hover:text-amber-soft transition-colors"

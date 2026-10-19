@@ -58,7 +58,7 @@ export const Navbar = () => {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
+        "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
         solid
           ? "bg-espresso/95 backdrop-blur-sm shadow-[0_1px_0_rgba(217,154,69,0.15)]"
           : "bg-transparent",

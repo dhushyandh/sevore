@@ -5,10 +5,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    scrollbar-gutter: stable;
   }
 
   body {
-    @apply bg-cream text-espresso font-sans antialiased;
+    @apply bg-cream text-espresso font-sans antialiased overflow-x-hidden;
     font-feature-settings: "ss01", "cv01";
   }
 

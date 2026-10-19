@@ -40,12 +40,12 @@ export const DishModal = ({ item, onClose }: DishModalProps) => {
           <div className="absolute inset-0 bg-espresso/70 backdrop-blur-sm" />
 
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.98 }}
+            initial={{ opacity: 0, y: 25, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.98 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] as const }}
+            exit={{ opacity: 0, y: 15, scale: 0.98 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] as const }}
             onClick={(e) => e.stopPropagation()}
-            className="relative z-10 grid w-full max-w-3xl overflow-hidden rounded-2xl bg-cream shadow-2xl sm:grid-cols-2 max-h-[90vh]"
+            className="relative z-10 grid w-full max-w-3xl overflow-hidden rounded-2xl bg-cream shadow-2xl sm:grid-cols-2 max-h-[90vh] transform-gpu will-change-[transform,opacity]"
           >
             <div className="relative h-56 sm:h-full sm:min-h-[360px]">
               <img
