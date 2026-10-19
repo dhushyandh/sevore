@@ -4,41 +4,54 @@ import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { SectionHeading } from "../components/SectionHeading";
 import { testimonials } from "../data/content";
 
-const ITEMS_PER_PAGE = 3;
-const SLIDE_INTERVAL_MS = 2800; // Auto-slides every 2.8 seconds (2-3 seconds)
-
 export const TestimonialsSection = () => {
   const reduce = useReducedMotion();
-  const [currentPage, setCurrentPage] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isHovered, setIsHovered] = useState(false);
 
-  const totalPages = Math.ceil(testimonials.length / ITEMS_PER_PAGE);
+  // Responsive items per page: 1 on mobile, 3 on desktop
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const itemsPerPage = isMobile ? 1 : 3;
+  const totalPages = Math.ceil(testimonials.length / itemsPerPage);
+
+  // Keep index within bounds when switching between screen sizes
+  const safeIndex = currentIndex >= totalPages ? 0 : currentIndex;
 
   const nextPage = () => {
     setDirection(1);
-    setCurrentPage((prev) => (prev + 1) % totalPages);
+    setCurrentIndex((prev) => (prev + 1) % totalPages);
   };
 
   const prevPage = () => {
     setDirection(-1);
-    setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages);
+    setCurrentIndex((prev) => (prev - 1 + totalPages) % totalPages);
   };
 
-  // Autoplay slide for each 2-3 seconds
+  // Auto-slide: one by one on mobile, page by page on desktop
   useEffect(() => {
     if (reduce || isHovered || totalPages <= 1) return;
     const interval = setInterval(() => {
+      if (document.body.style.overflow === "hidden" || document.hidden) return;
       setDirection(1);
-      setCurrentPage((prev) => (prev + 1) % totalPages);
-    }, SLIDE_INTERVAL_MS);
+      setCurrentIndex((prev) => (prev + 1) % totalPages);
+    }, isMobile ? 3500 : 4500);
 
     return () => clearInterval(interval);
-  }, [reduce, isHovered, totalPages]);
+  }, [reduce, isHovered, totalPages, isMobile]);
 
   const currentItems = testimonials.slice(
-    currentPage * ITEMS_PER_PAGE,
-    (currentPage + 1) * ITEMS_PER_PAGE
+    safeIndex * itemsPerPage,
+    (safeIndex + 1) * itemsPerPage
   );
 
   return (
@@ -52,34 +65,36 @@ export const TestimonialsSection = () => {
           theme="light"
         />
 
-        {/* Testimonials 3-Card Grid with 2.8s sliding */}
+        {/* Testimonials Carousel: 1 at a time on mobile, 3 on desktop */}
         <div
-          className="mt-14 min-h-[360px]"
+          className="mt-14 min-h-[340px]"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
+          onTouchStart={() => setIsHovered(true)}
+          onTouchEnd={() => setIsHovered(false)}
         >
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
-              key={currentPage}
+              key={`${safeIndex}-${isMobile ? "mobile" : "desktop"}`}
               custom={direction}
               initial={
                 reduce
                   ? { opacity: 0 }
-                  : { opacity: 0, x: direction > 0 ? 35 : -35 }
+                  : { opacity: 0, x: direction > 0 ? 30 : -30 }
               }
               animate={{ opacity: 1, x: 0 }}
               exit={
                 reduce
                   ? { opacity: 0 }
-                  : { opacity: 0, x: direction > 0 ? -35 : 35 }
+                  : { opacity: 0, x: direction > 0 ? -30 : 30 }
               }
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+              transition={{ duration: 0.35, ease: "easeOut" }}
+              className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-lg md:max-w-none mx-auto"
             >
               {currentItems.map((item) => (
                 <article
                   key={item.id}
-                  className="bg-[#FAFAFA] border border-stone-200/80 rounded-2xl p-7 sm:p-8 flex flex-col justify-between hover:border-amber/40 hover:bg-white hover:shadow-lg transition-all duration-300 group"
+                  className="bg-[#FAFAFA] border border-stone-200/80 rounded-2xl p-7 sm:p-8 flex flex-col justify-between hover:border-amber/40 hover:bg-white hover:shadow-lg transition-all duration-300 group shadow-sm"
                 >
                   <div>
                     {/* 5-Star Rating */}
@@ -138,8 +153,8 @@ export const TestimonialsSection = () => {
           <div className="mt-10 flex items-center justify-center gap-4">
             <button
               onClick={prevPage}
-              aria-label="Previous testimonials"
-              className="h-9 w-9 rounded-full border border-stone-300 flex items-center justify-center text-espresso/70 hover:text-espresso hover:border-espresso transition-colors"
+              aria-label="Previous testimonial"
+              className="h-9 w-9 rounded-full border border-stone-300 flex items-center justify-center text-espresso/70 hover:text-espresso hover:border-espresso transition-colors active:scale-95"
             >
               <ChevronLeft size={16} />
             </button>
@@ -149,12 +164,12 @@ export const TestimonialsSection = () => {
                 <button
                   key={i}
                   onClick={() => {
-                    setDirection(i > currentPage ? 1 : -1);
-                    setCurrentPage(i);
+                    setDirection(i > safeIndex ? 1 : -1);
+                    setCurrentIndex(i);
                   }}
-                  aria-label={`Go to slide ${i + 1}`}
+                  aria-label={`Go to ${isMobile ? "testimonial" : "slide"} ${i + 1}`}
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    currentPage === i
+                    safeIndex === i
                       ? "w-6 bg-amber"
                       : "w-2 bg-stone-300 hover:bg-stone-400"
                   }`}
@@ -164,8 +179,8 @@ export const TestimonialsSection = () => {
 
             <button
               onClick={nextPage}
-              aria-label="Next testimonials"
-              className="h-9 w-9 rounded-full border border-stone-300 flex items-center justify-center text-espresso/70 hover:text-espresso hover:border-espresso transition-colors"
+              aria-label="Next testimonial"
+              className="h-9 w-9 rounded-full border border-stone-300 flex items-center justify-center text-espresso/70 hover:text-espresso hover:border-espresso transition-colors active:scale-95"
             >
               <ChevronRight size={16} />
             </button>
